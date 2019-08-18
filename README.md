@@ -1,2 +1,2 @@
 # Jerry-Shan.github.io
-Using Hexo to build a blog
+Using Pelican to build my blog
