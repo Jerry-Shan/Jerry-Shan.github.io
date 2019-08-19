@@ -1,2 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>sjz's Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-02-05T18:32:00+11:00</updated><entry><title>first_post</title><link href="/first_post.html" rel="alternate"></link><published>2018-02-05T18:32:00+11:00</published><updated>2018-02-05T18:32:00+11:00</updated><author><name>sjz</name></author><id>tag:,2018-02-05:first_post.html</id><summary type="html">&lt;p&gt;Hello world from Pelican!&lt;/p&gt;</summary></entry></feed>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2019-08-19T22:32:00+10:00</updated><entry><title>2019-02-10左神算法课初级2笔记</title><link href="/20190210.html" rel="alternate"></link><published>2019-08-19T22:32:00+10:00</published><updated>2019-08-19T22:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-08-19:20190210.html</id><summary type="html">&lt;h1&gt;初级2&lt;/h1&gt;
+&lt;h2&gt;题一&lt;/h2&gt;
+&lt;p&gt;给定一个数组arr，和一个数num，请把小于等于num的数放在数 组的左边，大于num的数放在数组的右边。
+要求额外空间复杂度O(1)，时间复杂度O(N)&lt;/p&gt;
+&lt;h3&gt;思路&lt;/h3&gt;
+&lt;p&gt;小于等于num区域 和 大于num区域&lt;/p&gt;
+&lt;p&gt;两个指针：
+1. 一个 less --- 小于等于区最后一位
+2. 一个 cur  --- 当前遍历位置&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="https://note.youdao.com/yws/public/resource/c6058183aee84bd22e6718abe8563818/A53BCAB4835A4F5B96E274D347368308?ynotemdtimestamp=1566218224225" /&gt;&lt;/p&gt;
+&lt;h3&gt;荷兰国旗问题&lt;/h3&gt;
+&lt;p&gt;给定一个数组arr，和一个数num，请把小于num的数放在数组的 左边，等于num的数放在数组的中间，大于num的数放在数组的 右边。
+要求额外空间复杂度O(1)，时间复杂度O(N)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多加 等于区 and 大于区&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;快速排序&lt;/h2&gt;
+&lt;h2&gt;数组算法设计核心&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;指针移动&lt;/li&gt;
+&lt;li&gt;边界条件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;工业界几乎不会允许递归实现出现，任何递归函数都一定可以转化成为非递归实现&lt;/strong&gt; &lt;/p&gt;
+&lt;h2&gt;堆 Heap&lt;/h2&gt;
+&lt;p&gt;时间复杂度 O(N * logN) 额外空间复杂度 O(1)&lt;/p&gt;
+&lt;h3&gt;堆结构&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;分清楚满二叉树，完全二叉树的区别 --- 堆是完全二叉树&lt;/li&gt;
+&lt;li&gt;具体实现用数组结构，但是我们可以逻辑上想象成一个二叉树&lt;/li&gt;
+&lt;li&gt;说到堆一定是有隐藏条件的 --- 大根堆 or 小根堆&lt;ol&gt;
+&lt;li&gt;大根堆 --- 任何子树中， 父节点 &amp;gt; 子节点&lt;/li&gt;
+&lt;li&gt;小跟堆 --- 任何子树中， 父节点 &amp;lt; 子节点&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;堆结构操作&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;heapInsert --- 增加一个新的节点操作&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;heapInsert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[(&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;])&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;heapify --- 更新节点操作&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;heapify&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;largest&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;largest&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;largest&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="n"&gt;largest&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;largest&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;largest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;largest&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;堆排序&lt;/h3&gt;
+&lt;h2&gt;排序算法稳定性&lt;/h2&gt;
+&lt;p&gt;定义： 排序结果中，相同值的原始次序不会改变&lt;/p&gt;
+&lt;p&gt;意义： 保存原始排序中的信息，例如最开始是按照年龄排好序的一组数据，现在想要再对身高进行排序，这时如果排序算法稳定，则按照身高排好序的结果中，相同身高的数据项年龄依然保持原来的有序状态&lt;/p&gt;
+&lt;h3&gt;快速排序和堆排序都是&lt;strong&gt;不稳定的&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;一道坑爹的面试题：
+能否将一个数组排序成，奇数放左边，偶数放右边，相对次序不改变&lt;/p&gt;
+&lt;p&gt;要求：时间复杂度为O(N),额外空间复杂度为O(1)&lt;/p&gt;
+&lt;p&gt;回答：做不到，因为奇偶和大于小于本质一样，都是一种 &lt;strong&gt;01标准&lt;/strong&gt;，不是0就是1&lt;/p&gt;
+&lt;p&gt;这两个要求的条件本质和荷兰国旗问题的划分一样，所以这个问题等价于问我快速排序能不能够做到稳定。&lt;/p&gt;
+&lt;h3&gt;比较器 comparator&lt;/h3&gt;
+&lt;p&gt;本质；到底要求怎么排序？基于比较器就很好写代码了&lt;/p&gt;
+&lt;p&gt;例如，结构体排序时根据什么来排呢？&lt;/p&gt;
+&lt;p&gt;例如，结构体中&lt;/p&gt;
+&lt;h3&gt;Tips：面试技巧&lt;/h3&gt;
+&lt;p&gt;分清楚压力面试还是故意刁难。&lt;/p&gt;
+&lt;p&gt;压力面试 --- 问题很尖锐，不给喘息时间，但是态度往往很端正，不会给你出了压力以外的负面情绪&lt;/p&gt;
+&lt;p&gt;故意刁难 --- 态度很不端正，摆架子，阴阳怪气，而且自己问的问题自己都没有认真准备答案&lt;/p&gt;
+&lt;h2&gt;工业上的排序算法实现&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;当长度小于 60 时，直接用插入排序，因为常数项极低，而且O(N^2)此时的劣势表现并不明显&lt;/li&gt;
+&lt;li&gt;当所排序的数组是基础类型 （byte，short，int，double，float），&lt;strong&gt;相同数据之间次序无所谓&lt;/strong&gt;，直接用&lt;strong&gt;快排&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;当所排序的数组是自己定义的结构体类型（student）里面带有多维信息，则用&lt;strong&gt;归并排序&lt;/strong&gt;，保持稳定&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;其他排序 --- 不基于比较的排序&lt;/h2&gt;
+&lt;p&gt;特点： 受自身数据状况的影响太大&lt;/p&gt;
+&lt;h3&gt;1 桶排序概念&lt;/h3&gt;
+&lt;p&gt;桶是什么？
+一种表示各个数据出现频率的容器&lt;/p&gt;
+&lt;h4&gt;计数排序&lt;/h4&gt;
+&lt;p&gt;一个存储数据（词频）的容器，然后基于这个桶容器把所有数据统计一遍成为词频后（各个数据出现的次数）重新生成一组新的数据，所有过程没有进行过一次比较&lt;/p&gt;
+&lt;h3&gt;经典题目： 给定一个数组，求如果排序之后，相邻两数的最大差值，要求时 间复杂度O(N)，且要求不能用非基于比较的排序&lt;/h3&gt;
+&lt;h4&gt;思路：N个数，分配N+1个桶（0~N），先遍历一遍找出最大值和最小值（max and min），min 放在0号桶，max 放在 N号桶，将剩下的N-1个桶均分成等大小的，放入剩下的 N-2个元素，那么必然至少会存在一个空桶。这样做完之后，我们可以排除一个可能性 ： 相邻两数的最大差值一定不会来自于同一个桶中的两个数，一定是来自不同桶的。&lt;/h4&gt;
+&lt;h4&gt;实现： 利用三个长度为 N+1 的数组 表示桶中的三个变量 int minList[],int maxList[],boolean isEmptyList[]&lt;/h4&gt;
+&lt;p&gt;遍历每相邻两个桶的最值差： if !isEmptyList[i]： MaxGap = minList[i+1] - maxList[i]&lt;/p&gt;</summary><category term="study"></category><category term="skills"></category></entry><entry><title>first_post</title><link href="/first_post.html" rel="alternate"></link><published>2019-08-16T18:32:00+10:00</published><updated>2019-08-16T18:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-08-16:first_post.html</id><summary type="html">&lt;h2&gt;Why everyone should have his own tech-blog?&lt;/h2&gt;
+&lt;h3&gt;1. Remark&lt;/h3&gt;
+&lt;h3&gt;2. Improve&lt;/h3&gt;
+&lt;h3&gt;3. Review&lt;/h3&gt;</summary><category term="study"></category><category term="skills"></category></entry></feed>
