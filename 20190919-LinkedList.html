@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jinzhe Shan" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="algorithm, interview, " />
+
+<meta property="og:title" content="剑指offer|解题代码-1-LinkedList "/>
+<meta property="og:url" content="/20190919-LinkedList.html" />
+<meta property="og:description" content="剑指offer解题代码-1-LinkedList(Java)" />
+<meta property="og:site_name" content="Jinzhe Shan" />
+<meta property="og:article:author" content="Jinzhe Shan" />
+<meta property="og:article:published_time" content="2019-09-19T19:35:00+10:00" />
+<meta name="twitter:title" content="剑指offer|解题代码-1-LinkedList ">
+<meta name="twitter:description" content="剑指offer解题代码-1-LinkedList(Java)">
+
+        <title>剑指offer|解题代码-1-LinkedList  · Jinzhe Shan
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Jinzhe Shan - Full Atom Feed" />
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>Jinzhe Shan</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/about">About me</a></li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/20190919-LinkedList.html">
+                剑指offer|解题代码-1-LinkedList
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>目录：
+[toc]</p>
+<h1>LinkedList</h1>
+<h2>003-从尾到头打印链表 √</h2>
+<blockquote>
+<p>题目描述: 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。</p>
+</blockquote>
+<p>思路：所以逆序的操作都应该想到 stack 这个先进后出的数据结构</p>
+<ol>
+<li>建立一个辅助栈 stack 和一个存储结构 ArrayList</li>
+<li>将 原来链表中的值 一个个 push到 stack中</li>
+<li>将 stack中存储的值 一个个 pop 到 ArrayList</li>
+</ol>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="o">/**</span>
+<span class="o">*</span>    <span class="n">Q</span><span class="p">:</span> <span class="err">输入一个链表，按链表从尾到头的顺序返回一个</span><span class="n">ArrayList</span><span class="err">。</span>
+<span class="o">*</span>    <span class="n">public</span> <span class="k">class</span> <span class="nc">ListNode</span> <span class="p">{</span>
+<span class="o">*</span>        <span class="nb">int</span> <span class="n">val</span><span class="p">;</span>
+<span class="o">*</span>        <span class="n">ListNode</span> <span class="nb">next</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+<span class="o">*</span>
+<span class="o">*</span>        <span class="n">ListNode</span><span class="p">(</span><span class="nb">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+<span class="o">*</span>            <span class="n">this</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+<span class="o">*</span>        <span class="p">}</span>
+<span class="o">*</span>    <span class="p">}</span>
+<span class="o">*</span>
+<span class="o">*/</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Stack</span><span class="p">;</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">printListFromTailToHead</span><span class="p">(</span><span class="n">ListNode</span> <span class="n">listNode</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">//</span> <span class="mf">0.</span> <span class="n">special</span> <span class="n">case</span> <span class="p">[]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">listNode</span> <span class="o">==</span> <span class="n">null</span><span class="p">){</span>
+            <span class="n">ArrayList</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">//</span> <span class="mf">1.</span> <span class="n">Create</span> <span class="n">assistant</span> <span class="n">Stack</span> <span class="ow">and</span> <span class="n">new</span> <span class="n">ListNode</span> <span class="k">for</span> <span class="n">store</span> <span class="n">data</span>
+        <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Stack</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">newList</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+        <span class="n">ListNode</span> <span class="n">t</span> <span class="o">=</span> <span class="n">listNode</span><span class="p">;</span>
+        <span class="o">//</span> <span class="mf">2.</span> <span class="n">push</span> <span class="n">to</span> <span class="n">Stack</span> <span class="ow">in</span> <span class="n">order</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">t</span> <span class="o">!=</span> <span class="n">null</span><span class="p">){</span>
+            <span class="n">temp</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">val</span><span class="p">);</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">next</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="o">//</span> <span class="mf">3.</span> <span class="n">pop</span> <span class="n">to</span> <span class="n">new</span> <span class="nb">list</span> <span class="ow">in</span> <span class="n">order</span> <span class="n">which</span> <span class="nb">reversed</span> <span class="n">order</span>
+        <span class="k">while</span><span class="p">(</span><span class="err">!</span><span class="n">temp</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()){</span> <span class="o">//</span> <span class="n">check</span> <span class="n">whether</span> <span class="n">stack</span> <span class="ow">is</span> <span class="n">empty</span><span class="err">?</span> <span class="o">---&gt;</span> <span class="o">.</span><span class="n">isEmpty</span><span class="p">()</span> 
+            <span class="n">newList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">pop</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">newList</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>014-链表中倒数第k个结点 √</h2>
+<blockquote>
+<p>题目描述:
+输入一个链表，输出该链表中倒数第k个结点。</p>
+</blockquote>
+<p>思路： 快慢指针
+1. 定义两个指针 P1 P2
+2. P1 先向后寻址 k-1 次
+3. P1 P2同时向后寻址，当P1 == NULL 时，P2所指向的恰好为倒数第k个结点</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}*/</span>
+<span class="cm">/*</span>
+<span class="cm">思路：</span>
+<span class="cm">定义两个指针 P1 P2</span>
+<span class="cm">P1 先向后寻址 k-1 次</span>
+<span class="cm">然后P1 P2同时向后寻址，当P1 == NULL 时，P2所指向的恰好为倒数第k个结点</span>
+<span class="cm">*/</span> 
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">FindKthToTail</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">,</span><span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">head</span> <span class="o">==</span> <span class="kc">null</span><span class="o">||</span><span class="n">k</span><span class="o">&lt;=</span><span class="mi">0</span><span class="o">)</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="n">ListNode</span> <span class="n">P1</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="n">ListNode</span> <span class="n">P2</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">P1</span><span class="o">.</span><span class="na">next</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+            <span class="n">P1</span> <span class="o">=</span> <span class="n">P1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="k">else</span> 
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">while</span><span class="o">(</span><span class="n">P1</span><span class="o">.</span><span class="na">next</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+        <span class="n">P1</span> <span class="o">=</span> <span class="n">P1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="n">P2</span> <span class="o">=</span> <span class="n">P2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">P2</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>015-反转链表 √</h2>
+<blockquote>
+<p>Q：输入一个链表，反转链表后，输出新链表的表头。</p>
+</blockquote>
+<p>思路：
+1. 找到反转后链表的 headNode 当cur.next == null 时， headNode = cur
+2. 保证反转链表不出现断裂， 保存好 cur.next 结点</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="o">*/</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">ReverseList</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">ListNode</span> <span class="n">pReversedHead</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="n">ListNode</span> <span class="n">pCur</span>  <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="n">ListNode</span> <span class="n">pPrev</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="k">while</span><span class="o">(</span><span class="n">pCur</span> <span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+        <span class="n">ListNode</span> <span class="n">pNext</span> <span class="o">=</span> <span class="n">pCur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">pNext</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="n">pReversedHead</span> <span class="o">=</span> <span class="n">pCur</span><span class="o">;</span>
+        <span class="n">pCur</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">pPrev</span><span class="o">;</span> <span class="c1">// 反向链表 的 Next 是之前的上一个结点 prev</span>
+        <span class="n">pPrev</span> <span class="o">=</span> <span class="n">pCur</span><span class="o">;</span><span class="c1">// 反向链表现在的节点 是之后的 prev节点</span>
+        <span class="n">pCur</span> <span class="o">=</span> <span class="n">pNext</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">pReversedHead</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>016-合并两个或k个有序链表 √</h2>
+<blockquote>
+<p>题目描述: 输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。</p>
+</blockquote>
+<p>思路：</p>
+<p>解题代码：（Java）</p>
+<h3>递归版本</h3>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}*/</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="c1">// 递归版本</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">Merge</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">list1</span><span class="o">,</span><span class="n">ListNode</span> <span class="n">list2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">list1</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">list2</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">list2</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">list1</span><span class="o">;</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">list1</span><span class="o">.</span><span class="na">val</span> <span class="o">&lt;=</span> <span class="n">list2</span><span class="o">.</span><span class="na">val</span><span class="o">){</span>
+            <span class="n">list1</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">Merge</span><span class="o">(</span><span class="n">list1</span><span class="o">.</span><span class="na">next</span><span class="o">,</span><span class="n">list2</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">list1</span><span class="o">;</span>
+        <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+            <span class="n">list2</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">Merge</span><span class="o">(</span><span class="n">list1</span><span class="o">,</span><span class="n">list2</span><span class="o">.</span><span class="na">next</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">list2</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3>非递归版本</h3>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}*/</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="c1">// 非递归版本</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">Merge</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">list1</span><span class="o">,</span><span class="n">ListNode</span> <span class="n">list2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">list1</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">list2</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">list2</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">list1</span><span class="o">;</span>
+
+        <span class="n">ListNode</span> <span class="n">list3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ListNode</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">ListNode</span> <span class="n">head3</span> <span class="o">=</span> <span class="n">list3</span><span class="o">;</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">list1</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">list2</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">list1</span><span class="o">.</span><span class="na">val</span> <span class="o">&lt;=</span> <span class="n">list2</span><span class="o">.</span><span class="na">val</span><span class="o">){</span>
+                <span class="n">list3</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+                <span class="n">list1</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="o">}</span><span class="k">else</span> <span class="o">{</span>
+                <span class="n">list3</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">list2</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+                <span class="n">list2</span> <span class="o">=</span> <span class="n">list2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">list3</span> <span class="o">=</span> <span class="n">list3</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">list1</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="n">list3</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+            <span class="n">list1</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="n">list3</span> <span class="o">=</span> <span class="n">list3</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">list2</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="n">list3</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">list2</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+            <span class="n">list2</span> <span class="o">=</span> <span class="n">list2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="n">list3</span> <span class="o">=</span> <span class="n">list3</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">head3</span><span class="o">;</span>
+        <span class="c1">// 报错  java.lang.NullPointerException</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>025-复杂链表的复制</h2>
+<blockquote>
+<p>题目描述:
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）</p>
+</blockquote>
+<p>思路：
+时间和空间效率最高的解法是复制+拆分
+1. 复制原节点A后的A'放在A节点后
+2. 遍历原节点A的random节点B，并将复制节点A'的random节点连接节点B'
+3. 将链表拆分成 A-&gt;B&gt;C 与 A'-&gt;B'-&gt;C'</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class RandomListNode {</span>
+<span class="cm">    int label;</span>
+<span class="cm">    RandomListNode next = null;</span>
+<span class="cm">    RandomListNode random = null;</span>
+
+<span class="cm">    RandomListNode(int label) {</span>
+<span class="cm">        this.label = label;</span>
+<span class="cm">    }</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="cm">/*</span>
+
+<span class="cm">public class Solution {</span>
+<span class="cm">    public RandomListNode Clone(RandomListNode pHead)</span>
+<span class="cm">    {</span>
+<span class="cm">        // 0. 空链表情况</span>
+<span class="cm">        if (pHead == null){</span>
+<span class="cm">            return null;</span>
+<span class="cm">        }</span>
+<span class="cm">        // 1. 复制原节点A后的A&#39;放在A节点后</span>
+<span class="cm">        RandomListNode cur = pHead;</span>
+<span class="cm">        while(cur !=null){</span>
+<span class="cm">            RandomListNode repeat = new RandomListNode(cur.label);</span>
+<span class="cm">            repeat.next = cur.next;</span>
+<span class="cm">            cur.next = repeat;</span>
+<span class="cm">            cur = cur.next;</span>
+<span class="cm">        }</span>
+
+<span class="cm">        //2. 遍历原节点A的random节点B，并将复制节点A&#39;的random节点连接节点B&#39;</span>
+<span class="cm">        cur = pHead;</span>
+<span class="cm">        while(cur != null){</span>
+<span class="cm">            cur.next.random = cur.random.next; // 自己画个图比较好理解</span>
+<span class="cm">            cur = cur.next.next;</span>
+<span class="cm">        }</span>
+
+<span class="cm">        // 3. 将链表拆分成 A-&gt;B&gt;C 与 A&#39;-&gt;B&#39;-&gt;C&#39;</span>
+<span class="cm">        cur = pHead; // A</span>
+<span class="cm">        RandomListNode newHead = pHead.next; // A&#39;</span>
+<span class="cm">        //RandomListNode newCur = newHead;//A&#39;</span>
+<span class="cm">        while(cur !=null){</span>
+<span class="cm">            RandomListNode cloneNode = cur.next;//A&#39;</span>
+<span class="cm">            cur.next = cur.next.next; // A -&gt; B</span>
+<span class="cm">            cloneNode.next = cloneNode.next.next;// A&#39;-&gt;B&#39;</span>
+<span class="cm">            cur = cur.next;// A ---&gt; B</span>
+<span class="cm">        }</span>
+<span class="cm">        return newHead;</span>
+<span class="cm">    }</span>
+<span class="cm">}</span>
+</pre></div>
+
+
+<h2>036-两个链表的第一个公共结点 √</h2>
+<blockquote>
+<p>题目描述:
+输入两个链表，找出它们的第一个公共结点。</p>
+</blockquote>
+<p>Date: 20190918</p>
+<p>思路： </p>
+<p>首先，存在公共结点的两个链表是Y字形的，而不可能出现X形的，意味着从第一个公共结点开始，它们的后续结点都相同。
+1. 计算两个List的长度，得到长度查Dif
+2. 长的List 先遍历 Dif次后，与短的List依次比较结点
+3. 当结点相同，则为第一个公共结点</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}*/</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">FindFirstCommonNode</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">pHead1</span><span class="o">,</span> <span class="n">ListNode</span> <span class="n">pHead2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">pHead1</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">pHead2</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">ListNode</span> <span class="n">cur1</span> <span class="o">=</span> <span class="n">pHead1</span><span class="o">;</span>
+        <span class="n">ListNode</span> <span class="n">cur2</span> <span class="o">=</span> <span class="n">pHead2</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">pHead1Length</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">pHead2Length</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">cur1</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">pHead1Length</span> <span class="o">++;</span>
+            <span class="n">cur1</span> <span class="o">=</span> <span class="n">cur1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">cur2</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">pHead2Length</span> <span class="o">++;</span>
+            <span class="n">cur2</span> <span class="o">=</span> <span class="n">cur2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">cur1</span> <span class="o">=</span> <span class="n">pHead1</span><span class="o">;</span>
+        <span class="n">cur2</span> <span class="o">=</span> <span class="n">pHead2</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">pHead1Length</span> <span class="o">&gt;=</span> <span class="n">pHead2Length</span><span class="o">){</span>
+            <span class="kt">int</span> <span class="n">lengthDif</span> <span class="o">=</span> <span class="n">pHead1Length</span> <span class="o">-</span> <span class="n">pHead2Length</span><span class="o">;</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">lengthDif</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">){</span>
+                <span class="n">cur1</span> <span class="o">=</span> <span class="n">cur1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                <span class="n">lengthDif</span> <span class="o">--;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">else</span><span class="o">{</span>
+            <span class="kt">int</span> <span class="n">lengthDif</span> <span class="o">=</span> <span class="n">pHead2Length</span> <span class="o">-</span> <span class="n">pHead1Length</span><span class="o">;</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">lengthDif</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">){</span>
+                <span class="n">cur2</span> <span class="o">=</span> <span class="n">cur2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                <span class="n">lengthDif</span> <span class="o">--;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">cur1</span><span class="o">!=</span><span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cur2</span> <span class="o">!=</span><span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">cur1</span> <span class="o">!=</span> <span class="n">cur2</span><span class="o">){</span>
+            <span class="n">cur1</span>  <span class="o">=</span> <span class="n">cur1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="n">cur2</span> <span class="o">=</span> <span class="n">cur2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">cur1</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>055-链表中环的入口结点 √</h2>
+<blockquote>
+<p>题目描述:
+给一个链表，若其中包含环，请找出该链表的环的入口结点，否则，输出null。</p>
+</blockquote>
+<p>思路：
+1. 快慢指针，直到相遇
+2. 慢指针回到head，快指针速度降为一次一步，再次相遇则为环入口
+3. 需要注意快指针的边界和测试用例的情况</p>
+<p>解题代码：（java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="cm">/*</span>
+<span class="cm">思路：</span>
+<span class="cm">1. 快慢指针，直到相遇</span>
+<span class="cm">2. 慢指针回到head，快指针速度降为一次一步，再次相遇则为环入口</span>
+<span class="cm">3. 需要注意快指针的边界和测试用例的情况</span>
+<span class="cm">*/</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">EntryNodeOfLoop</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">pHead</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">pHead</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">pHead</span><span class="o">.</span><span class="na">next</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="n">ListNode</span> <span class="n">pFast</span> <span class="o">=</span> <span class="n">pHead</span><span class="o">;</span>
+        <span class="n">ListNode</span> <span class="n">pSlow</span> <span class="o">=</span> <span class="n">pHead</span><span class="o">;</span>
+
+        <span class="k">while</span><span class="o">(</span><span class="n">pFast</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">pFast</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">pFast</span> <span class="o">=</span> <span class="n">pFast</span><span class="o">.</span><span class="na">next</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="n">pSlow</span> <span class="o">=</span> <span class="n">pSlow</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">pFast</span> <span class="o">==</span> <span class="n">pSlow</span><span class="o">){</span>
+                <span class="n">pSlow</span> <span class="o">=</span> <span class="n">pHead</span><span class="o">;</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">pFast</span> <span class="o">!=</span> <span class="n">pSlow</span><span class="o">){</span>
+                    <span class="n">pFast</span> <span class="o">=</span> <span class="n">pFast</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                    <span class="n">pSlow</span> <span class="o">=</span> <span class="n">pSlow</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">pFast</span> <span class="o">==</span> <span class="n">pSlow</span><span class="o">)</span>
+                    <span class="k">return</span> <span class="n">pFast</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">pSlow</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>056-删除链表中重复的结点 √</h2>
+<blockquote>
+<p>题目描述 :
+在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 例如，链表1-&gt;2-&gt;3-&gt;3-&gt;4-&gt;4-&gt;5 处理后为 1-&gt;2-&gt;5</p>
+</blockquote>
+<p>思路:
+1. 创建头结点，解决 1-1-2-2-3-3 这种一开始就遇到一样的问题
+2. 创建preNode 确定前一个不重复的结点
+3. 创建curNode 一直遍历，遇到重复的结点（值相同）就继续往后，
+   若值不相同，令preNode.next 指向 curNode.next
+   curNode = curNode.next</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> public class ListNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    ListNode next = null;</span>
+
+<span class="cm">    ListNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="cm">/*</span>
+<span class="cm">思路:</span>
+<span class="cm">1. 创建头结点，解决 1-1-2-2-3-3 这种一开始就遇到一样的问题</span>
+<span class="cm">2. 创建preNode 确定前一个不重复的结点</span>
+<span class="cm">3. 创建curNode 一直遍历，遇到重复的结点（值相同）就继续往后，</span>
+<span class="cm">   若值不相同，令preNode.next 指向 curNode.next</span>
+<span class="cm">   curNode = curNode.next</span>
+<span class="cm">*/</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">deleteDuplication</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">pHead</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">ListNode</span> <span class="n">headNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ListNode</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="n">headNode</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">pHead</span><span class="o">;</span>
+        <span class="n">ListNode</span> <span class="n">preNode</span> <span class="o">=</span> <span class="n">headNode</span><span class="o">;</span>
+        <span class="n">ListNode</span> <span class="n">curNode</span> <span class="o">=</span> <span class="n">pHead</span><span class="o">;</span>
+
+        <span class="k">while</span><span class="o">(</span><span class="n">curNode</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="c1">// move and delete</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">curNode</span><span class="o">.</span><span class="na">val</span> <span class="o">==</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">.</span><span class="na">val</span><span class="o">){</span>
+                <span class="k">while</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">next</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">curNode</span><span class="o">.</span><span class="na">val</span> <span class="o">==</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">.</span><span class="na">val</span><span class="o">){</span>
+                <span class="n">curNode</span> <span class="o">=</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">preNode</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+                <span class="n">curNode</span> <span class="o">=</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="c1">// move</span>
+            <span class="k">else</span><span class="o">{</span>
+                <span class="n">preNode</span> <span class="o">=</span> <span class="n">curNode</span><span class="o">;</span>
+                <span class="n">curNode</span> <span class="o">=</span> <span class="n">curNode</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">headNode</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+            
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/20190913剑指offer题库目录.html" title="Previous: 剑指offer|题库目录">剑指offer|题库目录</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-09-19T19:35:00+10:00">9月 19, 2019</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#interview-ref">interview</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#algorithm-ref">algorithm
+                    <span>2</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://www.linkedin.com/in/jinzhe-jerry-shan-a916a4130/" title="My LinkedIn Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-linkedin sidebar-social-links"></i></a>
+    <a href="https://www.zhihu.com/people/shan-jin-zhe/activities" title="My Zhihu Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-zhihu sidebar-social-links"></i></a>
+    <a href="https://note.youdao.com/yws/public/resource/ecb91ceea48a0685b4f57657685205b6/B44D18447F1F43D583D3336F1B11D7F2?ynotemdtimestamp=1566218011962" title="My WeChat Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-wechat sidebar-social-links"></i></a>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    <script  language="javascript" type="text/javascript">
+function uncollapse() {
+    if (window.location.hash.match(/^#comment-\d+$/)) {
+        $('#disqus_thread').collapse('show');
+    }
+}
+</script>
+<script type="text/javascript" language="JavaScript">
+uncollapse();
+window.onhashchange=function(){
+    if (window.location.hash.match(/^#comment-\d+$/))
+        window.location.reload(true);
+}
+</script>
+<script>
+$('#disqus_thread').on('shown', function () {
+    var link = document.getElementById('comment-accordion-toggle');
+    var old_innerHTML = link.innerHTML;
+    $(link).fadeOut(200, function() {
+        $(this).text('Click here to hide comments').fadeIn(200);
+    });
+    $('#disqus_thread').on('hidden', function () {
+        $(link).fadeOut(200, function() {
+            $(this).text(old_innerHTML).fadeIn(200);
+        });
+    })
+})
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
