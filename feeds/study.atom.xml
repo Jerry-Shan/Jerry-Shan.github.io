@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/study.atom.xml" rel="self"></link><id>/</id><updated>2019-08-19T22:32:00+10:00</updated><entry><title>2019-02-10左神算法课初级2笔记</title><link href="/20190210.html" rel="alternate"></link><published>2019-08-19T22:32:00+10:00</published><updated>2019-08-19T22:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-08-19:20190210.html</id><summary type="html">&lt;h1&gt;初级2&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/study.atom.xml" rel="self"></link><id>/</id><updated>2019-08-19T22:32:00+10:00</updated><entry><title>2019-02-10左神算法课初级2笔记</title><link href="/20190210.html" rel="alternate"></link><published>2019-08-19T22:32:00+10:00</published><updated>2019-08-19T22:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-08-19:20190210.html</id><summary type="html">&lt;p&gt;[toc]&lt;/p&gt;
+&lt;h1&gt;初级2&lt;/h1&gt;
 &lt;h2&gt;题一&lt;/h2&gt;
 &lt;p&gt;给定一个数组arr，和一个数num，请把小于等于num的数放在数 组的左边，大于num的数放在数组的右边。
 要求额外空间复杂度O(1)，时间复杂度O(N)&lt;/p&gt;
