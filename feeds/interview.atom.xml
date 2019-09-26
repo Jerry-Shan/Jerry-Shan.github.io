@@ -1,5 +1,745 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/interview.atom.xml" rel="self"></link><id>/</id><updated>2019-09-19T19:35:00+10:00</updated><entry><title>剑指offer|解题代码-1-LinkedList</title><link href="/20190919-LinkedList.html" rel="alternate"></link><published>2019-09-19T19:35:00+10:00</published><updated>2019-09-19T19:35:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-19:20190919-LinkedList.html</id><summary type="html">&lt;p&gt;目录：
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/interview.atom.xml" rel="self"></link><id>/</id><updated>2019-09-26T17:32:00+10:00</updated><entry><title>剑指offer|解题代码-2-Tree</title><link href="/20190926-Tree.html" rel="alternate"></link><published>2019-09-26T17:32:00+10:00</published><updated>2019-09-26T17:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-26:20190926-Tree.html</id><summary type="html">&lt;p&gt;目录：
+[TOC]&lt;/p&gt;
+&lt;h1&gt;Tree&lt;/h1&gt;
+&lt;h2&gt;004-重建二叉树 √&lt;/h2&gt;
+&lt;p&gt;2019-3-6 13:09 --- 2019-3-6 13:24&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述：输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;分析：
+1. 前序遍历的第一个元素为树的根节点 root， 后面n个左子树元素，m个右子树元素
+2. 中序遍历中 root结点的左边元素为所有左子树元素共n个， 右边元素为所有右子树元素共m个&lt;/p&gt;
+&lt;p&gt;思路：递归方法
+1. 前序遍历第一个元素为 root
+2. 中序遍历找到root的index， [:index]为左子树的中序遍历， [index+1:]为右子树中序遍历
+3. 前序遍历中 [1:index+1]为左子树的前序遍历，[index+1:]为右子树的前序遍历
+4. 递归 传入左子树和右子树的前序/中序遍历
+5. 递归终止条件： 前序/中序遍历为空 return None&lt;/p&gt;
+&lt;p&gt;解题代码：（java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;/**&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;Definition&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;binary&lt;/span&gt; &lt;span class="n"&gt;tree&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TreeNode&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt;     &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt;     &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt;     &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt;     &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+ &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+ &lt;span class="o"&gt;*/&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Arrays&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]){&lt;/span&gt;
+                &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;leftPre&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;leftIn&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;rightPre&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;rightIn&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;leftPre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;leftIn&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rightPre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;rightIn&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;解题代码：（Python）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# -*- coding:utf-8 -*-&lt;/span&gt;
+&lt;span class="c1"&gt;# class TreeNode:&lt;/span&gt;
+&lt;span class="c1"&gt;#     def __init__(self, x):&lt;/span&gt;
+&lt;span class="c1"&gt;#         self.val = x&lt;/span&gt;
+&lt;span class="c1"&gt;#         self.left = None&lt;/span&gt;
+&lt;span class="c1"&gt;#         self.right = None&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;# 返回构造的TreeNode根节点&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;pre&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;tin&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+        &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;tin&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reConstructBinaryTree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pre&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:],&lt;/span&gt;&lt;span class="n"&gt;tin&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:])&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;017-树的子结构 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遍历树A，找到值与树B root值相同的结点&lt;/li&gt;
+&lt;li&gt;执行判断函数，检查左右孩子结点是否相同&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/**&lt;/span&gt;
+&lt;span class="cm"&gt;public class TreeNode {&lt;/span&gt;
+&lt;span class="cm"&gt;    int val = 0;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeNode left = null;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeNode right = null;&lt;/span&gt;
+
+&lt;span class="cm"&gt;    public TreeNode(int val) {&lt;/span&gt;
+&lt;span class="cm"&gt;        this.val = val;&lt;/span&gt;
+
+&lt;span class="cm"&gt;    }&lt;/span&gt;
+&lt;span class="cm"&gt;}&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;HasSubtree&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; 
+                &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;isTree1HasTree2&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HasSubtree&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HasSubtree&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;isTree1HasTree2&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;isTree1HasTree2&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;isTree1HasTree2&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;root2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;018-二叉树的镜像 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+操作给定的二叉树，将其变换为源二叉树的镜像。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路： 递归遍历二叉树，交换每一个节点的左右孩子&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;Mirror&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="c1"&gt;// swap left and right child&lt;/span&gt;
+            &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;temNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;temNode&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;Mirror&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;Mirror&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;022-从上往下打印二叉树 （二叉树按层遍历）√&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+从上往下打印出二叉树的每个节点，同层节点从左至右打印。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：
+1. Queue 将 root,root.left,root.right 依次加入Queue&lt;/p&gt;
+&lt;p&gt;补充知识： Java 集合  - LinkedList vs Queue
+1. import java.util.LinkedList;
+2. LinkedList&lt;TreeNode&gt; queue = new LinkedList&lt;TreeNode&gt;();
+3. queue.isEmpty(); // 判断是否为空
+3. queue.offer();//将节点入队 （Push）
+4. queue.poll();//队头元素出队并返回 (Pop)&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.ArrayList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.LinkedList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Queue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;/**&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TreeNode&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;*/&lt;/span&gt;
+
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;PrintFromTopToBottom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;Queue&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; 
+        &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="err"&gt;：&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class="err"&gt;后的括号&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="err"&gt;漏了！注意细节。&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isEmpty&lt;/span&gt;&lt;span class="p"&gt;()){&lt;/span&gt;
+            &lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;023-二叉搜索树的后序遍历序列 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;补充知识 1 ： &lt;strong&gt;二叉搜索树(Binary Search Tree)&lt;/strong&gt; or 排序二叉树（Sorted Binary Tree）
+1. 若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
+2. 若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
+3. 任意节点的左、右子树也分别为二叉查找树；
+4. 没有键值相等的节点。&lt;/p&gt;
+&lt;p&gt;补充知识 2 ： 树的前中后序遍历，前中后是指根节点root被打印的顺序，后序意味着打印顺序为 左右根&lt;/p&gt;
+&lt;p&gt;例如： [5，7，6] 可以是 BST 5-6-7 的后序遍历，故返回Ture，然而并没有一棵BST的后序遍历能够为 [7,4,6,5]&lt;/p&gt;
+&lt;p&gt;分析后可以得知，BST 后序遍历的序列有如下特征：
+1. 最后一个节点为 root
+2. [0] - [len-2] 被分成两段，前一段为root的左孩子节点，值都小于root.val， 后一段为root 的右孩子节点，值都大于root.val
+3. 根据 BST 的特性，对左右孩子进行递归调用继续判断&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="err"&gt;问题主要在于：一直在&lt;/span&gt; &lt;span class="n"&gt;copy&lt;/span&gt; &lt;span class="err"&gt;数组，效率较低&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Arrays&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;VerifySquenceOfBST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;rootVal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;rootVal&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;rootVal&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;leftNodes&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VerifySquenceOfBST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;leftNodes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;rightNodes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Arrays&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copyOfRange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VerifySquenceOfBST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rightNodes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;024-二叉树中和为某一值的路径 √&lt;/h2&gt;
+&lt;p&gt;20190924 总结： 这题前前后后刷了差不多2个小时&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠前)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：
+1. 每次都从根节点出发，需要一个栈结构记录路径 path，方便回溯，一个 int currentVal 记录当前路径节点值之和
+2. 当 currentVal == targetVal 且 currentNode 是叶子节点时，输出路径path （逆序）
+3. 当有孩子节点时递归调用 FindPath方法
+4. 注意： 如果当前节点为叶子节点但 currentVal ！= targetVal 则需要把 currentVal - currentNode.val 且 从路径中删除当前节点，然后返回父节点&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.ArrayList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Stack&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;/**&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TreeNode&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;*/&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;static&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;FindPath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+        &lt;span class="n"&gt;Stack&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Stack&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;currentVal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;FindPath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;currentVal&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;void&lt;/span&gt; &lt;span class="n"&gt;FindPath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Stack&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;currentVal&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+
+        &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;currentVal&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isLeaf&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;currentVal&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;isLeaf&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;oneRes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isEmpty&lt;/span&gt;&lt;span class="p"&gt;()){&lt;/span&gt;
+                &lt;span class="n"&gt;oneRes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pop&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;oneRes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;leftNodes&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;influence&lt;/span&gt; &lt;span class="n"&gt;rightNodes&lt;/span&gt;
+        &lt;span class="n"&gt;Stack&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;path2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Stack&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;path2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addAll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;FindPath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;currentVal&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;FindPath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;path2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;currentVal&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;delete&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;current&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;the&lt;/span&gt; &lt;span class="nn"&gt;path&lt;/span&gt; &lt;span class="nn"&gt;and&lt;/span&gt; &lt;span class="nn"&gt;add&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isEmpty&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+            &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pop&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;currentVal&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;解题代码2（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;FindPath&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;,&lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; {
+        &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;paths&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;new&lt;/span&gt; &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="ss"&gt;()&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;paths&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;find&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;paths&lt;/span&gt;,&lt;span class="nv"&gt;new&lt;/span&gt; &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="ss"&gt;()&lt;/span&gt;,&lt;span class="nv"&gt;root&lt;/span&gt;,&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;paths&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;void&lt;/span&gt; &lt;span class="nv"&gt;find&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;paths&lt;/span&gt;,&lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;path&lt;/span&gt;,&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;,&lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+        &lt;span class="nv"&gt;path&lt;/span&gt;.&lt;span class="nv"&gt;add&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;val&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;val&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+                &lt;span class="nv"&gt;paths&lt;/span&gt;.&lt;span class="nv"&gt;add&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;path&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            }
+            &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        }
+        &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nv"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;path2&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;new&lt;/span&gt; &lt;span class="nv"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class="ss"&gt;()&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;path2&lt;/span&gt;.&lt;span class="nv"&gt;addAll&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;path&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="nv"&gt;find&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;paths&lt;/span&gt;,&lt;span class="nv"&gt;path&lt;/span&gt;,&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;,&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;val&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="nv"&gt;find&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;paths&lt;/span&gt;,&lt;span class="nv"&gt;path2&lt;/span&gt;,&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;,&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;val&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;026-二叉搜索树与双向链表 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：
+1. 记录链表末尾节点 tail
+2. 中序遍历，连接 tail 和 pRoot
+3. 建议画图理解 else 内的3行连接代码&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/**&lt;/span&gt;
+&lt;span class="cm"&gt;public class TreeNode {&lt;/span&gt;
+&lt;span class="cm"&gt;    int val = 0;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeNode left = null;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeNode right = null;&lt;/span&gt;
+
+&lt;span class="cm"&gt;    public TreeNode(int val) {&lt;/span&gt;
+&lt;span class="cm"&gt;        this.val = val;&lt;/span&gt;
+
+&lt;span class="cm"&gt;    }&lt;/span&gt;
+
+&lt;span class="cm"&gt;}&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="c1"&gt;; // real root as return value&lt;/span&gt;
+    &lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="c1"&gt;; // the last node of LinkedList&lt;/span&gt;
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;Convert&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; {
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRootOfTree&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; 
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+            &lt;span class="nv"&gt;Convert&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+            &lt;span class="nv"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            &lt;span class="nv"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        }
+        &lt;span class="k"&gt;else&lt;/span&gt;{ &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="nv"&gt;Link&lt;/span&gt;
+            &lt;span class="nv"&gt;tail&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;tail&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            &lt;span class="nv"&gt;tail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        }
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+            &lt;span class="nv"&gt;Convert&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRootOfTree&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;038-二叉树的深度 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;TreeDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; {
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;TreeDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;TreeDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;Math&lt;/span&gt;.&lt;span class="nv"&gt;max&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;left&lt;/span&gt;,&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;039-平衡二叉树 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;补充知识： &lt;strong&gt;平衡二叉树&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;平衡二叉树是一棵&lt;strong&gt;空树&lt;/strong&gt;或它的&lt;strong&gt;左右两个子树的高度差的绝对值不超过1&lt;/strong&gt;，并且左右两个子树都是一棵平衡二叉树&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路： 非常直白，只需要计算左右子树高度，并且判断高度差是否小于等于1&lt;/p&gt;
+&lt;p&gt;解题代码 1：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;boolean&lt;/span&gt; &lt;span class="nv"&gt;IsBalanced_Solution&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; {
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;getDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;getDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;root&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;getDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;getDepth&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;root&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;Math&lt;/span&gt;.&lt;span class="nv"&gt;abs&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; ? &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; : &lt;span class="nv"&gt;Math&lt;/span&gt;.&lt;span class="nv"&gt;max&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;left&lt;/span&gt;,&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;解题代码 2： (java)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.lang.Math&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;IsBalanced_Solution&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getDepth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getDepth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Math&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;getDepth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getDepth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getDepth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Math&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;057-二叉树的下一个结点 ** √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：
+1. 有右孩子，则为右子树的最左节点
+2. ==无右孩子，则找父节点，直到当前节点为其父节点的左孩子时，返回父节点==&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;public class TreeLinkNode {&lt;/span&gt;
+&lt;span class="cm"&gt;    int val;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeLinkNode left = null;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeLinkNode right = null;&lt;/span&gt;
+&lt;span class="cm"&gt;    TreeLinkNode next = null;&lt;/span&gt;
+
+&lt;span class="cm"&gt;    TreeLinkNode(int val) {&lt;/span&gt;
+&lt;span class="cm"&gt;        this.val = val;&lt;/span&gt;
+&lt;span class="cm"&gt;    }&lt;/span&gt;
+&lt;span class="cm"&gt;}&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;TreeLinkNode&lt;/span&gt; &lt;span class="nv"&gt;GetNext&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeLinkNode&lt;/span&gt; &lt;span class="nv"&gt;pNode&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+    {
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pNode&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt;  &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;pNode&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;//&lt;/span&gt; 有右孩子，则为右子树的最左节点
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pNode&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;getLeftMost&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pNode&lt;/span&gt;.&lt;span class="nv"&gt;right&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;//&lt;/span&gt; 无右孩子，则找父节点，直到当前节点为其父节点的左孩子时，返回父节点
+        &lt;span class="k"&gt;else&lt;/span&gt; {
+            &lt;span class="nv"&gt;TreeLinkNode&lt;/span&gt; &lt;span class="nv"&gt;parent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pNode&lt;/span&gt;.&lt;span class="k"&gt;next&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;parent&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;parent&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;pNode&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+                &lt;span class="nv"&gt;pNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;parent&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+                &lt;span class="nv"&gt;parent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pNode&lt;/span&gt;.&lt;span class="k"&gt;next&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+            }
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;parent&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        }
+    }
+    &lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;TreeLinkNode&lt;/span&gt; &lt;span class="nv"&gt;getLeftMost&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeLinkNode&lt;/span&gt; &lt;span class="nv"&gt;node&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;node&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;node&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;node&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;{
+            &lt;span class="nv"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;node&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        }
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;node&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;058-对称的二叉树 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路： 判断左子树和右子树对称&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;isSymmetrical&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;isSymmetrical&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;isSymmetrical&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;r1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;r2&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;r2&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; 
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r1&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;r2&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; 
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;r1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;r2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;isSymmetrical&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;r2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;isSymmetrical&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;r2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;059-按之字形顺序打印二叉树 √&lt;/h2&gt;
+&lt;p&gt;思路：
+1. 层序遍历的思想 （队列）
+2. 左右打印顺序用一个boolean flag来控制&lt;/p&gt;
+&lt;p&gt;基于层序遍历按层输出的代码，加入reverse，并不需要两个stack&lt;/p&gt;
+&lt;p&gt;核心：
+1. preLayerLastNode 记录上一层最后的节点
+2. curLayerLastNode 记录当前层最后的节点 （当前层意味着正在将孩子节点加入队列，本题用linkedList实现）&lt;/p&gt;
+&lt;p&gt;解题代码：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;Print&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;resLists&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;  &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// pre layer last node&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// current layer last node&lt;/span&gt;
+        &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;leftToRight&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// Flag using to control print order&lt;/span&gt;
+        &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;offer&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="o"&gt;(!&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isEmpty&lt;/span&gt;&lt;span class="o"&gt;()){&lt;/span&gt;
+            &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;poll&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;offer&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLast&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;offer&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLast&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt; &lt;span class="c1"&gt;// add&lt;/span&gt;
+                &lt;span class="c1"&gt;// add resList to resLists and create a new resList&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;leftToRight&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;Collections&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                    &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="o"&gt;}&lt;/span&gt;
+                &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+                &lt;span class="n"&gt;leftToRight&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;leftToRight&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;val&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+
+
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;060-把二叉树打印成多行 （层序遍历，逐层打印） √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：层序遍历 + 层最后节点判定&lt;/p&gt;
+&lt;p&gt;参考：&lt;a href="https://blog.csdn.net/zhang___yong/article/details/78932459"&gt;二叉树逐层遍历打印&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;解题代码：（java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.ArrayList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.LinkedList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;/*&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;TreeNode&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;*/&lt;/span&gt;
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;resLists&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;  &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="n"&gt;pre&lt;/span&gt; &lt;span class="n"&gt;layer&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="n"&gt;current&lt;/span&gt; &lt;span class="n"&gt;layer&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;
+        &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isEmpty&lt;/span&gt;&lt;span class="p"&gt;()){&lt;/span&gt;
+            &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getLast&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getLast&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+                &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;resLists&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;resList&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;preLayerLastNode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;curLayerLastNode&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArrayList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;resList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;curNode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resLists&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;061-序列化二叉树 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述 : 
+请实现两个函数，分别用来序列化和反序列化二叉树
+二叉树的序列化是指：把一棵二叉树按照某种遍历方式的结果以某种格式保存为字符串，从而使得内存中建立起来的二叉树可以持久保存。序列化可以基于先序、中序、后序、层序的二叉树遍历方式来进行修改，序列化的结果是一个字符串，序列化时通过 某种符号表示空节点（#），以 ！ 表示一个结点值的结束（value!）。
+二叉树的反序列化是指：根据某种遍历顺序得到的序列化字符串结果str，重构二叉树。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;思路：
+1. 序列化是前序遍历的变形，加入到一个String中
+2. 反序列化也是前序遍历的变形，利用一个LinkedList or Queue结构存储node vals 构造Tree&lt;/p&gt;
+&lt;p&gt;解题代码：（java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.LinkedList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Queue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;public&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;Serialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;#!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;Serialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;Serialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;Deserialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;nodes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;Queue&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;LinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;nodes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nodes&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;DeserialTreeByPreOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;DeserialTreeByPreOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;poll&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;#&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;TreeNode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;valueOf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DeserialTreeByPreOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DeserialTreeByPreOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;062-二叉搜索树的第k个结点 √&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;题目描述: 给定一棵二叉搜索树，请找出其中的第k小的结点。例如， （5，3，7，2，4，6，8）中，按结点数值大小顺序第三小结点的值为4。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;解题代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;public&lt;/span&gt; &lt;span class="nv"&gt;class&lt;/span&gt; &lt;span class="nv"&gt;Solution&lt;/span&gt; {
+    &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;KthNode&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;TreeNode&lt;/span&gt; &lt;span class="nv"&gt;pRoot&lt;/span&gt;, &lt;span class="nv"&gt;int&lt;/span&gt; &lt;span class="nv"&gt;k&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+    {
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRoot&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;null&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;KthNode&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRoot&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;,&lt;span class="nv"&gt;k&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;n&lt;/span&gt;&lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;n&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;k&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+            &lt;span class="nv"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;pRoot&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="nv"&gt;KthNode&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;pRoot&lt;/span&gt;.&lt;span class="nv"&gt;left&lt;/span&gt;,&lt;span class="nv"&gt;k&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nv"&gt;res&lt;/span&gt;&lt;span class="c1"&gt;;&lt;/span&gt;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;解题代码2：（Java）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Solution&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="nf"&gt;KthNode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TreeNode&lt;/span&gt; &lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;KthNode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;left&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;++;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;KthNode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pRoot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;right&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="algorithm"></category></entry><entry><title>剑指offer|解题代码-1-LinkedList</title><link href="/20190919-LinkedList.html" rel="alternate"></link><published>2019-09-19T19:35:00+10:00</published><updated>2019-09-19T19:35:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-19:20190919-LinkedList.html</id><summary type="html">&lt;p&gt;目录：
 [toc]&lt;/p&gt;
 &lt;h1&gt;LinkedList&lt;/h1&gt;
 &lt;h2&gt;003-从尾到头打印链表 √&lt;/h2&gt;

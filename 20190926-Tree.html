@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Jinzhe Shan" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="algorithm, interview, " />
+
+<meta property="og:title" content="剑指offer|解题代码-2-Tree "/>
+<meta property="og:url" content="/20190926-Tree.html" />
+<meta property="og:description" content="剑指offer解题代码-2-Tree(Java)" />
+<meta property="og:site_name" content="Jinzhe Shan" />
+<meta property="og:article:author" content="Jinzhe Shan" />
+<meta property="og:article:published_time" content="2019-09-26T17:32:00+10:00" />
+<meta name="twitter:title" content="剑指offer|解题代码-2-Tree ">
+<meta name="twitter:description" content="剑指offer解题代码-2-Tree(Java)">
+
+        <title>剑指offer|解题代码-2-Tree  · Jinzhe Shan
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Jinzhe Shan - Full Atom Feed" />
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>Jinzhe Shan</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/about">About me</a></li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/20190926-Tree.html">
+                剑指offer|解题代码-2-Tree
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <p>目录：
+[TOC]</p>
+<h1>Tree</h1>
+<h2>004-重建二叉树 √</h2>
+<p>2019-3-6 13:09 --- 2019-3-6 13:24</p>
+<blockquote>
+<p>题目描述：输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。</p>
+</blockquote>
+<p>分析：
+1. 前序遍历的第一个元素为树的根节点 root， 后面n个左子树元素，m个右子树元素
+2. 中序遍历中 root结点的左边元素为所有左子树元素共n个， 右边元素为所有右子树元素共m个</p>
+<p>思路：递归方法
+1. 前序遍历第一个元素为 root
+2. 中序遍历找到root的index， [:index]为左子树的中序遍历， [index+1:]为右子树中序遍历
+3. 前序遍历中 [1:index+1]为左子树的前序遍历，[index+1:]为右子树的前序遍历
+4. 递归 传入左子树和右子树的前序/中序遍历
+5. 递归终止条件： 前序/中序遍历为空 return None</p>
+<p>解题代码：（java）</p>
+<div class="highlight"><pre><span></span><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Definition</span> <span class="k">for</span> <span class="n">binary</span> <span class="n">tree</span>
+ <span class="o">*</span> <span class="n">public</span> <span class="k">class</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+ <span class="o">*</span>     <span class="nb">int</span> <span class="n">val</span><span class="p">;</span>
+ <span class="o">*</span>     <span class="n">TreeNode</span> <span class="n">left</span><span class="p">;</span>
+ <span class="o">*</span>     <span class="n">TreeNode</span> <span class="n">right</span><span class="p">;</span>
+ <span class="o">*</span>     <span class="n">TreeNode</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">val</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+ <span class="o">*</span> <span class="p">}</span>
+ <span class="o">*/</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">TreeNode</span> <span class="n">reConstructBinaryTree</span><span class="p">(</span><span class="nb">int</span> <span class="p">[]</span> <span class="n">pre</span><span class="p">,</span><span class="nb">int</span> <span class="p">[]</span> <span class="ow">in</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pre</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="ow">in</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+        <span class="n">TreeNode</span> <span class="n">root</span>  <span class="o">=</span> <span class="n">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+        <span class="nb">int</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="nb">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="ow">in</span><span class="o">.</span><span class="n">length</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="ow">in</span><span class="p">[</span><span class="n">i</span><span class="p">]){</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nb">int</span> <span class="p">[]</span> <span class="n">leftPre</span>  <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="nb">int</span> <span class="p">[]</span> <span class="n">leftIn</span>   <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="ow">in</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">index</span><span class="p">);</span>
+        <span class="nb">int</span> <span class="p">[]</span> <span class="n">rightPre</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">pre</span><span class="o">.</span><span class="n">length</span><span class="p">);</span>
+        <span class="nb">int</span> <span class="p">[]</span> <span class="n">rightIn</span>  <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="ow">in</span><span class="p">,</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="ow">in</span><span class="o">.</span><span class="n">length</span><span class="p">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">left</span>  <span class="o">=</span> <span class="n">reConstructBinaryTree</span><span class="p">(</span><span class="n">leftPre</span><span class="p">,</span><span class="n">leftIn</span><span class="p">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">reConstructBinaryTree</span><span class="p">(</span><span class="n">rightPre</span><span class="p">,</span><span class="n">rightIn</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>解题代码：（Python）</p>
+<div class="highlight"><pre><span></span><span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="c1"># class TreeNode:</span>
+<span class="c1">#     def __init__(self, x):</span>
+<span class="c1">#         self.val = x</span>
+<span class="c1">#         self.left = None</span>
+<span class="c1">#         self.right = None</span>
+<span class="k">class</span> <span class="nc">Solution</span><span class="p">:</span>
+    <span class="c1"># 返回构造的TreeNode根节点</span>
+    <span class="k">def</span> <span class="nf">reConstructBinaryTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre</span><span class="p">,</span> <span class="n">tin</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pre</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">tin</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reConstructBinaryTree</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">tin</span><span class="p">[:</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reConstructBinaryTree</span><span class="p">(</span><span class="n">pre</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span><span class="n">tin</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">root</span>
+</pre></div>
+
+
+<h2>017-树的子结构 √</h2>
+<blockquote>
+<p>题目描述 : 
+输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）</p>
+</blockquote>
+<p>思路：</p>
+<ol>
+<li>遍历树A，找到值与树B root值相同的结点</li>
+<li>执行判断函数，检查左右孩子结点是否相同</li>
+</ol>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm">public class TreeNode {</span>
+<span class="cm">    int val = 0;</span>
+<span class="cm">    TreeNode left = null;</span>
+<span class="cm">    TreeNode right = null;</span>
+
+<span class="cm">    public TreeNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+
+<span class="cm">    }</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">HasSubtree</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">root1</span><span class="o">,</span><span class="n">TreeNode</span> <span class="n">root2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">root1</span><span class="o">!=</span><span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">root2</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">val</span> <span class="o">==</span> <span class="n">root2</span><span class="o">.</span><span class="na">val</span><span class="o">)</span> 
+                <span class="n">result</span> <span class="o">=</span> <span class="n">isTree1HasTree2</span><span class="o">(</span><span class="n">root1</span><span class="o">,</span><span class="n">root2</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">result</span> <span class="o">!=</span><span class="kc">true</span><span class="o">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">HasSubtree</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">left</span><span class="o">,</span><span class="n">root2</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">result</span> <span class="o">!=</span><span class="kc">true</span><span class="o">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">HasSubtree</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">right</span><span class="o">,</span><span class="n">root2</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isTree1HasTree2</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">root1</span><span class="o">,</span><span class="n">TreeNode</span> <span class="n">root2</span><span class="o">){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">root2</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">root1</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">val</span> <span class="o">!=</span> <span class="n">root2</span><span class="o">.</span><span class="na">val</span><span class="o">)</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">isTree1HasTree2</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">left</span><span class="o">,</span><span class="n">root2</span><span class="o">.</span><span class="na">left</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">isTree1HasTree2</span><span class="o">(</span><span class="n">root1</span><span class="o">.</span><span class="na">right</span><span class="o">,</span><span class="n">root2</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>018-二叉树的镜像 √</h2>
+<blockquote>
+<p>题目描述 : 
+操作给定的二叉树，将其变换为源二叉树的镜像。</p>
+</blockquote>
+<p>思路： 递归遍历二叉树，交换每一个节点的左右孩子</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">Mirror</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">root</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="c1">// swap left and right child</span>
+            <span class="n">TreeNode</span> <span class="n">temNode</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">temNode</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                <span class="n">Mirror</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">!=</span><span class="kc">null</span><span class="o">)</span>
+                <span class="n">Mirror</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>022-从上往下打印二叉树 （二叉树按层遍历）√</h2>
+<blockquote>
+<p>题目描述 : 
+从上往下打印出二叉树的每个节点，同层节点从左至右打印。</p>
+</blockquote>
+<p>思路：
+1. Queue 将 root,root.left,root.right 依次加入Queue</p>
+<p>补充知识： Java 集合  - LinkedList vs Queue
+1. import java.util.LinkedList;
+2. LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+3. queue.isEmpty(); // 判断是否为空
+3. queue.offer();//将节点入队 （Push）
+4. queue.poll();//队头元素出队并返回 (Pop)</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.LinkedList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Queue</span><span class="p">;</span>
+<span class="o">/**</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">TreeNode</span><span class="p">(</span><span class="nb">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+<span class="o">*/</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">PrintFromTopToBottom</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">resList</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">Queue</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span><span class="p">();</span> 
+        <span class="o">//</span> <span class="n">debug</span><span class="err">：</span> <span class="n">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">&lt;&gt;</span><span class="err">后的括号</span><span class="p">()</span><span class="err">漏了！注意细节。</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">resList</span><span class="p">;</span>
+        <span class="n">TreeNode</span> <span class="n">curNode</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+        <span class="k">while</span><span class="p">(</span><span class="err">!</span><span class="n">queue</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()){</span>
+            <span class="n">curNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">poll</span><span class="p">();</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">left</span> <span class="o">!=</span> <span class="n">null</span><span class="p">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">left</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">right</span> <span class="o">!=</span> <span class="n">null</span><span class="p">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">right</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="n">resList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">val</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">resList</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>023-二叉搜索树的后序遍历序列 √</h2>
+<blockquote>
+<p>题目描述 : 
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。</p>
+</blockquote>
+<p>补充知识 1 ： <strong>二叉搜索树(Binary Search Tree)</strong> or 排序二叉树（Sorted Binary Tree）
+1. 若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
+2. 若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
+3. 任意节点的左、右子树也分别为二叉查找树；
+4. 没有键值相等的节点。</p>
+<p>补充知识 2 ： 树的前中后序遍历，前中后是指根节点root被打印的顺序，后序意味着打印顺序为 左右根</p>
+<p>例如： [5，7，6] 可以是 BST 5-6-7 的后序遍历，故返回Ture，然而并没有一棵BST的后序遍历能够为 [7,4,6,5]</p>
+<p>分析后可以得知，BST 后序遍历的序列有如下特征：
+1. 最后一个节点为 root
+2. [0] - [len-2] 被分成两段，前一段为root的左孩子节点，值都小于root.val， 后一段为root 的右孩子节点，值都大于root.val
+3. 根据 BST 的特性，对左右孩子进行递归调用继续判断</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="o">//</span> <span class="err">问题主要在于：一直在</span> <span class="n">copy</span> <span class="err">数组，效率较低</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="p">;</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">VerifySquenceOfBST</span><span class="p">(</span><span class="nb">int</span> <span class="p">[]</span> <span class="n">sequence</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">int</span> <span class="nb">len</span>  <span class="o">=</span> <span class="n">sequence</span><span class="o">.</span><span class="n">length</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">sequence</span><span class="o">==</span><span class="n">null</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
+        <span class="nb">int</span> <span class="n">rootVal</span> <span class="o">=</span> <span class="n">sequence</span><span class="p">[</span><span class="nb">len</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(;</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">len</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">sequence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;</span><span class="n">rootVal</span><span class="p">){</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nb">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nb">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="nb">len</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">sequence</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;</span><span class="n">rootVal</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">boolean</span> <span class="n">left</span><span class="o">=</span><span class="n">true</span><span class="p">;</span>
+        <span class="n">boolean</span> <span class="n">right</span><span class="o">=</span><span class="n">true</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">index</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">){</span>
+            <span class="nb">int</span> <span class="p">[]</span> <span class="n">leftNodes</span>  <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">index</span><span class="p">);</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">VerifySquenceOfBST</span><span class="p">(</span><span class="n">leftNodes</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">index</span><span class="o">&lt;</span><span class="nb">len</span><span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+            <span class="nb">int</span> <span class="p">[]</span> <span class="n">rightNodes</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="n">copyOfRange</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span><span class="n">index</span><span class="p">,</span><span class="nb">len</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">VerifySquenceOfBST</span><span class="p">(</span><span class="n">rightNodes</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">left</span><span class="o">&amp;&amp;</span><span class="n">right</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>024-二叉树中和为某一值的路径 √</h2>
+<p>20190924 总结： 这题前前后后刷了差不多2个小时</p>
+<blockquote>
+<p>题目描述 : 
+输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠前)</p>
+</blockquote>
+<p>思路：
+1. 每次都从根节点出发，需要一个栈结构记录路径 path，方便回溯，一个 int currentVal 记录当前路径节点值之和
+2. 当 currentVal == targetVal 且 currentNode 是叶子节点时，输出路径path （逆序）
+3. 当有孩子节点时递归调用 FindPath方法
+4. 注意： 如果当前节点为叶子节点但 currentVal ！= targetVal 则需要把 currentVal - currentNode.val 且 从路径中删除当前节点，然后返回父节点</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Stack</span><span class="p">;</span>
+<span class="o">/**</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">TreeNode</span><span class="p">(</span><span class="nb">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+<span class="o">*/</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">res</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+
+    <span class="n">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">FindPath</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">,</span><span class="nb">int</span> <span class="n">target</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+
+        <span class="n">Stack</span> <span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">path</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Stack</span><span class="p">();</span>
+        <span class="nb">int</span> <span class="n">currentVal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">FindPath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">target</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">currentVal</span><span class="p">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">FindPath</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">,</span> <span class="nb">int</span> <span class="n">target</span><span class="p">,</span> <span class="n">Stack</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">path</span><span class="p">,</span> <span class="nb">int</span> <span class="n">currentVal</span><span class="p">){</span>
+
+        <span class="n">path</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">val</span><span class="p">);</span>
+        <span class="n">currentVal</span> <span class="o">+=</span> <span class="n">root</span><span class="o">.</span><span class="n">val</span><span class="p">;</span>
+        <span class="n">boolean</span> <span class="n">isLeaf</span> <span class="o">=</span> <span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span> <span class="o">==</span> <span class="n">null</span> <span class="o">&amp;&amp;</span> <span class="n">root</span><span class="o">.</span><span class="n">right</span> <span class="o">==</span> <span class="n">null</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">currentVal</span> <span class="o">==</span> <span class="n">target</span> <span class="o">&amp;&amp;</span> <span class="n">isLeaf</span><span class="p">){</span>
+            <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">oneRes</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+            <span class="k">while</span><span class="p">(</span><span class="err">!</span><span class="n">path</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()){</span>
+                <span class="n">oneRes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">oneRes</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="o">//</span> <span class="k">if</span> <span class="n">no</span> <span class="n">new</span> <span class="n">path</span> <span class="mi">2</span><span class="p">,</span> <span class="n">leftNodes</span> <span class="n">will</span> <span class="n">influence</span> <span class="n">rightNodes</span>
+        <span class="n">Stack</span> <span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">path2</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Stack</span><span class="p">();</span>
+        <span class="n">path2</span><span class="o">.</span><span class="n">addAll</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span><span class="o">!=</span><span class="n">null</span><span class="p">)</span>
+            <span class="n">FindPath</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span><span class="p">,</span><span class="n">target</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">currentVal</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">right</span><span class="o">!=</span><span class="n">null</span><span class="p">)</span>
+            <span class="n">FindPath</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">right</span><span class="p">,</span><span class="n">target</span><span class="p">,</span><span class="n">path2</span><span class="p">,</span><span class="n">currentVal</span><span class="p">);</span>
+        <span class="o">//</span> <span class="k">if</span> <span class="n">can</span> <span class="ow">not</span> <span class="n">find</span> <span class="n">the</span> <span class="n">path</span><span class="p">,</span> <span class="n">delete</span> <span class="n">the</span> <span class="n">current</span> <span class="n">node</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">path</span> <span class="nn">and</span> <span class="nn">add</span>
+        <span class="k">if</span><span class="p">(</span><span class="err">!</span><span class="n">path</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">())</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">();</span>
+        <span class="n">currentVal</span> <span class="o">-=</span> <span class="n">root</span><span class="o">.</span><span class="n">val</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>解题代码2（Java）</p>
+<div class="highlight"><pre><span></span><span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">public</span> <span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;&gt;</span> <span class="nv">FindPath</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">root</span>,<span class="nv">int</span> <span class="nv">target</span><span class="ss">)</span> {
+        <span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;&gt;</span> <span class="nv">paths</span><span class="o">=</span><span class="nv">new</span> <span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;&gt;</span><span class="ss">()</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span><span class="o">==</span><span class="nv">null</span><span class="ss">)</span><span class="k">return</span> <span class="nv">paths</span><span class="c1">;</span>
+        <span class="nv">find</span><span class="ss">(</span><span class="nv">paths</span>,<span class="nv">new</span> <span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;</span><span class="ss">()</span>,<span class="nv">root</span>,<span class="nv">target</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">return</span> <span class="nv">paths</span><span class="c1">;</span>
+    }
+    <span class="nv">public</span> <span class="nv">void</span> <span class="nv">find</span><span class="ss">(</span><span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;&gt;</span> <span class="nv">paths</span>,<span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;</span> <span class="nv">path</span>,<span class="nv">TreeNode</span> <span class="nv">root</span>,<span class="nv">int</span> <span class="nv">target</span><span class="ss">)</span>{
+        <span class="nv">path</span>.<span class="nv">add</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">val</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">left</span><span class="o">==</span><span class="nv">null</span><span class="o">&amp;&amp;</span><span class="nv">root</span>.<span class="nv">right</span><span class="o">==</span><span class="nv">null</span><span class="ss">)</span>{
+            <span class="k">if</span><span class="ss">(</span><span class="nv">target</span><span class="o">==</span><span class="nv">root</span>.<span class="nv">val</span><span class="ss">)</span>{
+                <span class="nv">paths</span>.<span class="nv">add</span><span class="ss">(</span><span class="nv">path</span><span class="ss">)</span><span class="c1">;</span>
+            }
+            <span class="k">return</span><span class="c1">;</span>
+        }
+        <span class="nv">ArrayList</span><span class="o">&lt;</span><span class="nv">Integer</span><span class="o">&gt;</span> <span class="nv">path2</span><span class="o">=</span><span class="nv">new</span> <span class="nv">ArrayList</span><span class="o">&lt;&gt;</span><span class="ss">()</span><span class="c1">;</span>
+        <span class="nv">path2</span>.<span class="nv">addAll</span><span class="ss">(</span><span class="nv">path</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">left</span><span class="o">!=</span><span class="nv">null</span><span class="ss">)</span><span class="nv">find</span><span class="ss">(</span><span class="nv">paths</span>,<span class="nv">path</span>,<span class="nv">root</span>.<span class="nv">left</span>,<span class="nv">target</span><span class="o">-</span><span class="nv">root</span>.<span class="nv">val</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">right</span><span class="o">!=</span><span class="nv">null</span><span class="ss">)</span><span class="nv">find</span><span class="ss">(</span><span class="nv">paths</span>,<span class="nv">path2</span>,<span class="nv">root</span>.<span class="nv">right</span>,<span class="nv">target</span><span class="o">-</span><span class="nv">root</span>.<span class="nv">val</span><span class="ss">)</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<h2>026-二叉搜索树与双向链表 √</h2>
+<blockquote>
+<p>题目描述 : 
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。</p>
+</blockquote>
+<p>思路：
+1. 记录链表末尾节点 tail
+2. 中序遍历，连接 tail 和 pRoot
+3. 建议画图理解 else 内的3行连接代码</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm">public class TreeNode {</span>
+<span class="cm">    int val = 0;</span>
+<span class="cm">    TreeNode left = null;</span>
+<span class="cm">    TreeNode right = null;</span>
+
+<span class="cm">    public TreeNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+
+<span class="cm">    }</span>
+
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">TreeNode</span> <span class="nv">root</span> <span class="o">=</span> <span class="nv">null</span><span class="c1">; // real root as return value</span>
+    <span class="nv">TreeNode</span> <span class="nv">tail</span> <span class="o">=</span> <span class="nv">null</span><span class="c1">; // the last node of LinkedList</span>
+    <span class="nv">public</span> <span class="nv">TreeNode</span> <span class="nv">Convert</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">pRootOfTree</span><span class="ss">)</span> {
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pRootOfTree</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span> 
+            <span class="k">return</span> <span class="nv">null</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pRootOfTree</span>.<span class="nv">left</span> <span class="o">!=</span> <span class="nv">null</span><span class="ss">)</span>
+            <span class="nv">Convert</span><span class="ss">(</span><span class="nv">pRootOfTree</span>.<span class="nv">left</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span>{
+            <span class="nv">root</span> <span class="o">=</span> <span class="nv">pRootOfTree</span><span class="c1">;</span>
+            <span class="nv">tail</span> <span class="o">=</span> <span class="nv">pRootOfTree</span><span class="c1">;</span>
+        }
+        <span class="k">else</span>{ <span class="o">//</span> <span class="nv">Link</span>
+            <span class="nv">tail</span>.<span class="nv">right</span> <span class="o">=</span> <span class="nv">pRootOfTree</span><span class="c1">;</span>
+            <span class="nv">pRootOfTree</span>.<span class="nv">left</span> <span class="o">=</span> <span class="nv">tail</span><span class="c1">;</span>
+            <span class="nv">tail</span> <span class="o">=</span> <span class="nv">pRootOfTree</span><span class="c1">;</span>
+        }
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pRootOfTree</span>.<span class="nv">right</span> <span class="o">!=</span> <span class="nv">null</span><span class="ss">)</span>
+            <span class="nv">Convert</span><span class="ss">(</span><span class="nv">pRootOfTree</span>.<span class="nv">right</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">return</span> <span class="nv">root</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<h2>038-二叉树的深度 √</h2>
+<blockquote>
+<p>题目描述 : 
+输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。</p>
+</blockquote>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">public</span> <span class="nv">int</span> <span class="nv">TreeDepth</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">root</span><span class="ss">)</span> {
+        <span class="k">if</span><span class="ss">(</span><span class="nv">root</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span> <span class="k">return</span> <span class="mi">0</span><span class="c1">;</span>
+        <span class="nv">int</span> <span class="nv">left</span> <span class="o">=</span> <span class="nv">TreeDepth</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">left</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">int</span> <span class="nv">right</span> <span class="o">=</span> <span class="nv">TreeDepth</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">right</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">return</span> <span class="nv">Math</span>.<span class="nv">max</span><span class="ss">(</span><span class="nv">left</span>,<span class="nv">right</span><span class="ss">)</span><span class="o">+</span><span class="mi">1</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<h2>039-平衡二叉树 √</h2>
+<blockquote>
+<p>题目描述 : 
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。</p>
+</blockquote>
+<p>补充知识： <strong>平衡二叉树</strong></p>
+<blockquote>
+<p>平衡二叉树是一棵<strong>空树</strong>或它的<strong>左右两个子树的高度差的绝对值不超过1</strong>，并且左右两个子树都是一棵平衡二叉树</p>
+</blockquote>
+<p>思路： 非常直白，只需要计算左右子树高度，并且判断高度差是否小于等于1</p>
+<p>解题代码 1：（Java）</p>
+<div class="highlight"><pre><span></span><span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">public</span> <span class="nv">boolean</span> <span class="nv">IsBalanced_Solution</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">root</span><span class="ss">)</span> {
+        <span class="k">return</span> <span class="nv">getDepth</span><span class="ss">(</span><span class="nv">root</span><span class="ss">)</span><span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="c1">;</span>
+    }
+    <span class="nv">public</span> <span class="nv">int</span> <span class="nv">getDepth</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">root</span><span class="ss">)</span>{
+        <span class="k">if</span> <span class="ss">(</span><span class="nv">root</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span> <span class="k">return</span> <span class="mi">0</span><span class="c1">;</span>
+        <span class="nv">int</span> <span class="nv">left</span> <span class="o">=</span> <span class="nv">getDepth</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">left</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">left</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="ss">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="c1">;</span>
+        <span class="nv">int</span> <span class="nv">right</span> <span class="o">=</span> <span class="nv">getDepth</span><span class="ss">(</span><span class="nv">root</span>.<span class="nv">right</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">right</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="ss">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="c1">;</span>
+        <span class="k">return</span> <span class="nv">Math</span>.<span class="nv">abs</span><span class="ss">(</span><span class="nv">left</span><span class="o">-</span><span class="nv">right</span><span class="ss">)</span><span class="o">&gt;</span><span class="mi">1</span> ? <span class="o">-</span><span class="mi">1</span> : <span class="nv">Math</span>.<span class="nv">max</span><span class="ss">(</span><span class="nv">left</span>,<span class="nv">right</span><span class="ss">)</span><span class="o">+</span><span class="mi">1</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<p>解题代码 2： (java)</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.lang.Math</span><span class="p">;</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">boolean</span> <span class="n">IsBalanced_Solution</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> 
+            <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+        <span class="nb">int</span> <span class="n">left</span> <span class="o">=</span> <span class="n">getDepth</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span><span class="p">);</span>
+        <span class="nb">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">getDepth</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">right</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">left</span><span class="o">-</span><span class="n">right</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">public</span> <span class="nb">int</span> <span class="n">getDepth</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> 
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="nb">int</span> <span class="n">left</span> <span class="o">=</span> <span class="n">getDepth</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span><span class="p">);</span>
+        <span class="nb">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">getDepth</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">right</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span><span class="n">right</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>057-二叉树的下一个结点 ** √</h2>
+<blockquote>
+<p>题目描述 : 
+给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。</p>
+</blockquote>
+<p>思路：
+1. 有右孩子，则为右子树的最左节点
+2. ==无右孩子，则找父节点，直到当前节点为其父节点的左孩子时，返回父节点==</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">public class TreeLinkNode {</span>
+<span class="cm">    int val;</span>
+<span class="cm">    TreeLinkNode left = null;</span>
+<span class="cm">    TreeLinkNode right = null;</span>
+<span class="cm">    TreeLinkNode next = null;</span>
+
+<span class="cm">    TreeLinkNode(int val) {</span>
+<span class="cm">        this.val = val;</span>
+<span class="cm">    }</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">public</span> <span class="nv">TreeLinkNode</span> <span class="nv">GetNext</span><span class="ss">(</span><span class="nv">TreeLinkNode</span> <span class="nv">pNode</span><span class="ss">)</span>
+    {
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pNode</span> <span class="o">==</span>  <span class="nv">null</span><span class="ss">)</span> <span class="k">return</span> <span class="nv">pNode</span><span class="c1">;</span>
+        <span class="o">//</span> 有右孩子，则为右子树的最左节点
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pNode</span>.<span class="nv">right</span> <span class="o">!=</span> <span class="nv">null</span><span class="ss">)</span>
+            <span class="k">return</span> <span class="nv">getLeftMost</span><span class="ss">(</span><span class="nv">pNode</span>.<span class="nv">right</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="o">//</span> 无右孩子，则找父节点，直到当前节点为其父节点的左孩子时，返回父节点
+        <span class="k">else</span> {
+            <span class="nv">TreeLinkNode</span> <span class="nv">parent</span> <span class="o">=</span> <span class="nv">pNode</span>.<span class="k">next</span><span class="c1">;</span>
+            <span class="k">while</span> <span class="ss">(</span><span class="nv">parent</span> <span class="o">!=</span> <span class="nv">null</span> <span class="o">&amp;&amp;</span> <span class="nv">parent</span>.<span class="nv">left</span> <span class="o">!=</span> <span class="nv">pNode</span><span class="ss">)</span>{
+                <span class="nv">pNode</span> <span class="o">=</span> <span class="nv">parent</span><span class="c1">;</span>
+                <span class="nv">parent</span> <span class="o">=</span> <span class="nv">pNode</span>.<span class="k">next</span><span class="c1">;</span>
+            }
+            <span class="k">return</span> <span class="nv">parent</span><span class="c1">;</span>
+        }
+    }
+    <span class="nv">public</span> <span class="nv">TreeLinkNode</span> <span class="nv">getLeftMost</span><span class="ss">(</span><span class="nv">TreeLinkNode</span> <span class="nv">node</span><span class="ss">)</span>{
+        <span class="k">if</span><span class="ss">(</span><span class="nv">node</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span> <span class="k">return</span> <span class="nv">node</span><span class="c1">;</span>
+        <span class="k">while</span> <span class="ss">(</span><span class="nv">node</span>.<span class="nv">left</span> <span class="o">!=</span> <span class="nv">null</span><span class="ss">)</span>{
+            <span class="nv">node</span> <span class="o">=</span> <span class="nv">node</span>.<span class="nv">left</span><span class="c1">;</span>
+        }
+        <span class="k">return</span> <span class="nv">node</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<h2>058-对称的二叉树 √</h2>
+<blockquote>
+<p>题目描述 : 
+请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。</p>
+</blockquote>
+<p>思路： 判断左子树和右子树对称</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">isSymmetrical</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">pRoot</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">pRoot</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">isSymmetrical</span><span class="o">(</span><span class="n">pRoot</span><span class="o">.</span><span class="na">left</span><span class="o">,</span><span class="n">pRoot</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kt">boolean</span> <span class="nf">isSymmetrical</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">r1</span><span class="o">,</span><span class="n">TreeNode</span> <span class="n">r2</span><span class="o">){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">r1</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">r2</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> 
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">r1</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">r2</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> 
+            <span class="k">return</span> <span class="n">r1</span><span class="o">.</span><span class="na">val</span> <span class="o">==</span> <span class="n">r2</span><span class="o">.</span><span class="na">val</span> <span class="o">&amp;&amp;</span> <span class="n">isSymmetrical</span><span class="o">(</span><span class="n">r1</span><span class="o">.</span><span class="na">left</span><span class="o">,</span><span class="n">r2</span><span class="o">.</span><span class="na">right</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">isSymmetrical</span><span class="o">(</span><span class="n">r1</span><span class="o">.</span><span class="na">right</span><span class="o">,</span><span class="n">r2</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>059-按之字形顺序打印二叉树 √</h2>
+<p>思路：
+1. 层序遍历的思想 （队列）
+2. 左右打印顺序用一个boolean flag来控制</p>
+<p>基于层序遍历按层输出的代码，加入reverse，并不需要两个stack</p>
+<p>核心：
+1. preLayerLastNode 记录上一层最后的节点
+2. curLayerLastNode 记录当前层最后的节点 （当前层意味着正在将孩子节点加入队列，本题用linkedList实现）</p>
+<p>解题代码：（Java）</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="nf">Print</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">resLists</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;();</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="k">return</span>  <span class="n">resLists</span><span class="o">;</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">resList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
+        <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;();</span>
+        <span class="n">TreeNode</span> <span class="n">preLayerLastNode</span> <span class="o">=</span> <span class="n">root</span><span class="o">;</span> <span class="c1">// pre layer last node</span>
+        <span class="n">TreeNode</span> <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">root</span><span class="o">;</span> <span class="c1">// current layer last node</span>
+        <span class="kt">boolean</span> <span class="n">leftToRight</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">// Flag using to control print order</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()){</span>
+            <span class="n">TreeNode</span> <span class="n">curNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+                <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">getLast</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+                <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">getLast</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">curNode</span> <span class="o">==</span> <span class="n">preLayerLastNode</span><span class="o">){</span> <span class="c1">// add</span>
+                <span class="c1">// add resList to resLists and create a new resList</span>
+                <span class="n">resList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">val</span><span class="o">);</span>
+                <span class="k">if</span><span class="o">(</span><span class="n">leftToRight</span><span class="o">)</span>
+                    <span class="n">resLists</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">resList</span><span class="o">);</span>
+                <span class="k">else</span><span class="o">{</span>
+                    <span class="n">Collections</span><span class="o">.</span><span class="na">reverse</span><span class="o">(</span><span class="n">resList</span><span class="o">);</span>
+                    <span class="n">resLists</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">resList</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="n">preLayerLastNode</span> <span class="o">=</span> <span class="n">curLayerLastNode</span><span class="o">;</span>
+                <span class="n">resList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
+                <span class="n">leftToRight</span> <span class="o">=</span> <span class="o">!</span><span class="n">leftToRight</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">else</span><span class="o">{</span>
+                <span class="n">resList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">curNode</span><span class="o">.</span><span class="na">val</span><span class="o">);</span>
+            <span class="o">}</span>
+
+
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">resLists</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>060-把二叉树打印成多行 （层序遍历，逐层打印） √</h2>
+<blockquote>
+<p>题目描述 : 
+从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行。</p>
+</blockquote>
+<p>思路：层序遍历 + 层最后节点判定</p>
+<p>参考：<a href="https://blog.csdn.net/zhang___yong/article/details/78932459">二叉树逐层遍历打印</a></p>
+<p>解题代码：（java）</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.LinkedList</span><span class="p">;</span>
+<span class="o">/*</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+    <span class="n">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">TreeNode</span><span class="p">(</span><span class="nb">int</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+<span class="o">*/</span>
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">Print</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">resLists</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="n">resLists</span><span class="p">;</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">resList</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">TreeNode</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">TreeNode</span> <span class="n">preLayerLastNode</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span> <span class="o">//</span> <span class="n">pre</span> <span class="n">layer</span> <span class="n">last</span> <span class="n">node</span>
+        <span class="n">TreeNode</span> <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span> <span class="o">//</span> <span class="n">current</span> <span class="n">layer</span> <span class="n">last</span> <span class="n">node</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+        <span class="k">while</span><span class="p">(</span><span class="err">!</span><span class="n">queue</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()){</span>
+            <span class="n">TreeNode</span> <span class="n">curNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">poll</span><span class="p">();</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">left</span> <span class="o">!=</span> <span class="n">null</span><span class="p">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">left</span><span class="p">);</span>
+                <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">getLast</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">right</span> <span class="o">!=</span> <span class="n">null</span><span class="p">){</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">right</span><span class="p">);</span>
+                <span class="n">curLayerLastNode</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">getLast</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curNode</span> <span class="o">==</span> <span class="n">preLayerLastNode</span><span class="p">){</span>
+                <span class="o">//</span> <span class="n">add</span> <span class="n">resList</span> <span class="n">to</span> <span class="n">resLists</span> <span class="ow">and</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">resList</span>
+                <span class="n">resList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">val</span><span class="p">);</span>
+                <span class="n">resLists</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">resList</span><span class="p">);</span>
+                <span class="n">preLayerLastNode</span> <span class="o">=</span> <span class="n">curLayerLastNode</span><span class="p">;</span>
+                <span class="n">resList</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">else</span><span class="p">{</span>
+                <span class="n">resList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">curNode</span><span class="o">.</span><span class="n">val</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">resLists</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>061-序列化二叉树 √</h2>
+<blockquote>
+<p>题目描述 : 
+请实现两个函数，分别用来序列化和反序列化二叉树
+二叉树的序列化是指：把一棵二叉树按照某种遍历方式的结果以某种格式保存为字符串，从而使得内存中建立起来的二叉树可以持久保存。序列化可以基于先序、中序、后序、层序的二叉树遍历方式来进行修改，序列化的结果是一个字符串，序列化时通过 某种符号表示空节点（#），以 ！ 表示一个结点值的结束（value!）。
+二叉树的反序列化是指：根据某种遍历顺序得到的序列化字符串结果str，重构二叉树。</p>
+</blockquote>
+<p>思路：
+1. 序列化是前序遍历的变形，加入到一个String中
+2. 反序列化也是前序遍历的变形，利用一个LinkedList or Queue结构存储node vals 构造Tree</p>
+<p>解题代码：（java）</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">java.util.LinkedList</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Queue</span><span class="p">;</span>
+
+<span class="n">public</span> <span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="n">String</span> <span class="n">Serialize</span><span class="p">(</span><span class="n">TreeNode</span> <span class="n">root</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="n">null</span><span class="p">){</span>
+            <span class="k">return</span> <span class="s2">&quot;#!&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">String</span> <span class="n">res</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">val</span><span class="o">+</span><span class="s2">&quot;!&quot;</span><span class="p">;</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="n">Serialize</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">left</span><span class="p">);</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="n">Serialize</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">right</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+  <span class="p">}</span>
+    <span class="n">TreeNode</span> <span class="n">Deserialize</span><span class="p">(</span><span class="n">String</span> <span class="nb">str</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="p">[]</span> <span class="n">nodes</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">);</span>
+        <span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="n">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="k">for</span><span class="p">(</span><span class="nb">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="n">nodes</span><span class="o">.</span><span class="n">length</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">offer</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">DeserialTreeByPreOrder</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+  <span class="p">}</span>
+    <span class="n">TreeNode</span> <span class="n">DeserialTreeByPreOrder</span><span class="p">(</span><span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">queue</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="n">node</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">poll</span><span class="p">();</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+        <span class="n">TreeNode</span> <span class="n">head</span> <span class="o">=</span> <span class="n">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">Integer</span><span class="o">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">node</span><span class="p">));</span>
+        <span class="n">head</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">DeserialTreeByPreOrder</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+        <span class="n">head</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">DeserialTreeByPreOrder</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">head</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2>062-二叉搜索树的第k个结点 √</h2>
+<blockquote>
+<p>题目描述: 给定一棵二叉搜索树，请找出其中的第k小的结点。例如， （5，3，7，2，4，6，8）中，按结点数值大小顺序第三小结点的值为4。</p>
+</blockquote>
+<p>解题代码：</p>
+<div class="highlight"><pre><span></span><span class="nv">public</span> <span class="nv">class</span> <span class="nv">Solution</span> {
+    <span class="nv">int</span> <span class="nv">n</span> <span class="o">=</span> <span class="mi">0</span><span class="c1">;</span>
+    <span class="nv">TreeNode</span> <span class="nv">res</span> <span class="o">=</span> <span class="nv">null</span><span class="c1">;</span>
+    <span class="nv">TreeNode</span> <span class="nv">KthNode</span><span class="ss">(</span><span class="nv">TreeNode</span> <span class="nv">pRoot</span>, <span class="nv">int</span> <span class="nv">k</span><span class="ss">)</span>
+    {
+        <span class="k">if</span><span class="ss">(</span><span class="nv">pRoot</span> <span class="o">==</span> <span class="nv">null</span><span class="ss">)</span>
+            <span class="k">return</span> <span class="nv">null</span><span class="c1">;</span>
+        <span class="nv">KthNode</span><span class="ss">(</span><span class="nv">pRoot</span>.<span class="nv">left</span>,<span class="nv">k</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="nv">n</span><span class="o">+=</span><span class="mi">1</span><span class="c1">;</span>
+        <span class="k">if</span><span class="ss">(</span><span class="nv">n</span><span class="o">==</span><span class="nv">k</span><span class="ss">)</span>
+            <span class="nv">res</span> <span class="o">=</span> <span class="nv">pRoot</span><span class="c1">;</span>
+        <span class="nv">KthNode</span><span class="ss">(</span><span class="nv">pRoot</span>.<span class="nv">left</span>,<span class="nv">k</span><span class="ss">)</span><span class="c1">;</span>
+        <span class="k">return</span> <span class="nv">res</span><span class="c1">;</span>
+    }
+}
+</pre></div>
+
+
+<p>解题代码2：（Java）</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="n">TreeNode</span> <span class="n">res</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="n">TreeNode</span> <span class="nf">KthNode</span><span class="o">(</span><span class="n">TreeNode</span> <span class="n">pRoot</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">pRoot</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">pRoot</span><span class="o">.</span><span class="na">left</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">KthNode</span><span class="o">(</span><span class="n">pRoot</span><span class="o">.</span><span class="na">left</span><span class="o">,</span><span class="n">k</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">n</span><span class="o">++;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">n</span><span class="o">==</span><span class="n">k</span><span class="o">){</span>
+            <span class="n">res</span><span class="o">=</span><span class="n">pRoot</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">pRoot</span><span class="o">.</span><span class="na">right</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">KthNode</span><span class="o">(</span><span class="n">pRoot</span><span class="o">.</span><span class="na">right</span><span class="o">,</span><span class="n">k</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+            
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/20190919-LinkedList.html" title="Previous: 剑指offer|解题代码-1-LinkedList">剑指offer|解题代码-1-LinkedList</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-09-26T17:32:00+10:00">9月 26, 2019</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#interview-ref">interview</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#algorithm-ref">algorithm
+                    <span>3</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="https://www.linkedin.com/in/jinzhe-jerry-shan-a916a4130/" title="My LinkedIn Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-linkedin sidebar-social-links"></i></a>
+    <a href="https://www.zhihu.com/people/shan-jin-zhe/activities" title="My Zhihu Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-zhihu sidebar-social-links"></i></a>
+    <a href="https://github.com/Jerry-Shan/BlogImages/blob/master/wechat_QRcode.jpg?raw=true" title="My WeChat Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-wechat sidebar-social-links"></i></a>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    <script  language="javascript" type="text/javascript">
+function uncollapse() {
+    if (window.location.hash.match(/^#comment-\d+$/)) {
+        $('#disqus_thread').collapse('show');
+    }
+}
+</script>
+<script type="text/javascript" language="JavaScript">
+uncollapse();
+window.onhashchange=function(){
+    if (window.location.hash.match(/^#comment-\d+$/))
+        window.location.reload(true);
+}
+</script>
+<script>
+$('#disqus_thread').on('shown', function () {
+    var link = document.getElementById('comment-accordion-toggle');
+    var old_innerHTML = link.innerHTML;
+    $(link).fadeOut(200, function() {
+        $(this).text('Click here to hide comments').fadeIn(200);
+    });
+    $('#disqus_thread').on('hidden', function () {
+        $(link).fadeOut(200, function() {
+            $(this).text(old_innerHTML).fadeIn(200);
+        });
+    })
+})
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
