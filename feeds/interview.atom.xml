@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Jinzhe Shan</title><link href="/" rel="alternate"></link><link href="/feeds/interview.atom.xml" rel="self"></link><id>/</id><updated>2019-10-06T21:32:00+11:00</updated><entry><title>剑指offer|解题代码-3-Stack-Queue-Heap-HashMap-Graph(Java)</title><link href="/20191006.html" rel="alternate"></link><published>2019-10-06T21:32:00+11:00</published><updated>2019-10-06T21:32:00+11:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-10-06:20191006.html</id><summary type="html">&lt;p&gt;目录：
-[TOC]&lt;/p&gt;
+Stack &amp;amp; Queue
+    005-用两个栈实现队列 √
+    020-包含min函数的栈 √
+    021-栈的压入、弹出序列 √
+    044-翻转单词顺序列(栈) √
+    043-左旋转字符串(矩阵翻转) √
+    064-滑动窗口的最大值 √
+Heap
+    029-最小的K个数  √
+Hash Table
+    034-第一个只出现一次的字符 √
+图 （图的遍历 + 回溯法）
+    065-矩阵中的路径(BFS) √
+    066-机器人的运动范围(DFS) √&lt;/p&gt;
 &lt;h1&gt;Stack &amp;amp; Queue&lt;/h1&gt;
 &lt;h2&gt;005-用两个栈实现队列 √&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -465,7 +478,23 @@
     &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="algorithm"></category></entry><entry><title>动态规划专项练习-20190928</title><link href="/20190928-DP.html" rel="alternate"></link><published>2019-09-28T19:35:00+10:00</published><updated>2019-09-28T19:35:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-28:20190928-DP.html</id><summary type="html">&lt;h1&gt;动态规划&lt;/h1&gt;
-&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;p&gt;目录：
+动态规划
+    动态规划思考步骤：
+        1 原问题：
+        2 子问题：
+        3 确认状态：
+        4 初始状态：
+        5 状态转移方程：
+        解题代码
+    例1: 爬楼梯
+    例2: 打家劫舍
+    例3:最大子段和
+    例4：找零钱
+    例5：三角形数组和最小路径 （二维DP）
+    例6 ： 最长上升子序列
+    例7： 二维矩阵中左上角到右下角的最短路径和
+    例8:地牢游戏&lt;/p&gt;
 &lt;h2&gt;动态规划解题步骤&lt;/h2&gt;
 &lt;p&gt;核心思想是&lt;strong&gt;递推&lt;/strong&gt;，难点在于想起出 状态 dp[i] 代表什么，然后构造状态转移矩阵，利用初始条件递推出最终结果&lt;/p&gt;
 &lt;ol&gt;
@@ -962,7 +991,22 @@
 &lt;p&gt;这篇文章从28号晚上陆陆续续一直写到30号晚上，主要是基于小象学院 《面试算法LeetCode刷题班》中动态规划的一章，今天去官网看发现课程已经下架了，故将课程课件放在了我GitHub秋招面试准备&lt;a href="https://github.com/Jerry-Shan/Algorithm_Interview"&gt;repo&lt;/a&gt;中，有需要的朋友可以自己下载。&lt;/p&gt;
 &lt;p&gt;动态规划是很大一类算法题，也是各大互联网公司笔试面试中逃不掉的一个测试算法基本功的题型。本文只做了一个入门，动态规划系列文章随着我学习的深入，会陆续发布在专栏中。&lt;/p&gt;
 &lt;p&gt;愿诸君阅读愉快，学习进步。&lt;/p&gt;</summary><category term="algorithm"></category></entry><entry><title>剑指offer|解题代码-2-Tree</title><link href="/20190926-Tree.html" rel="alternate"></link><published>2019-09-26T17:32:00+10:00</published><updated>2019-09-26T17:32:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-26:20190926-Tree.html</id><summary type="html">&lt;p&gt;目录：
-[TOC]&lt;/p&gt;
+Tree
+    004-重建二叉树 √
+    017-树的子结构 √
+    018-二叉树的镜像 √
+    022-从上往下打印二叉树 （二叉树按层遍历）√
+    023-二叉搜索树的后序遍历序列 √
+    024-二叉树中和为某一值的路径 √
+    026-二叉搜索树与双向链表 √
+    038-二叉树的深度 √
+    039-平衡二叉树 √
+    057-二叉树的下一个结点  √
+    058-对称的二叉树 √
+    059-按之字形顺序打印二叉树 √
+    060-把二叉树打印成多行 （层序遍历，逐层打印） √
+    061-序列化二叉树 √
+    062-二叉搜索树的第k个结点 √&lt;/p&gt;
 &lt;h1&gt;Tree&lt;/h1&gt;
 &lt;h2&gt;004-重建二叉树 √&lt;/h2&gt;
 &lt;p&gt;2019-3-6 13:09 --- 2019-3-6 13:24&lt;/p&gt;
@@ -1702,7 +1746,17 @@
     &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="algorithm"></category></entry><entry><title>剑指offer|解题代码-1-LinkedList</title><link href="/20190919-LinkedList.html" rel="alternate"></link><published>2019-09-19T19:35:00+10:00</published><updated>2019-09-19T19:35:00+10:00</updated><author><name>Jinzhe Shan</name></author><id>tag:,2019-09-19:20190919-LinkedList.html</id><summary type="html">&lt;p&gt;目录：
-[toc]&lt;/p&gt;
+LinkedList
+    003-从尾到头打印链表 √
+    014-链表中倒数第k个结点 √
+    015-反转链表 √
+    016-合并两个或k个有序链表 √
+    递归版本
+    非递归版本
+    025-复杂链表的复制
+    036-两个链表的第一个公共结点 √
+    055-链表中环的入口结点 √
+    056-删除链表中重复的结点 √&lt;/p&gt;
 &lt;h1&gt;LinkedList&lt;/h1&gt;
 &lt;h2&gt;003-从尾到头打印链表 √&lt;/h2&gt;
 &lt;blockquote&gt;
